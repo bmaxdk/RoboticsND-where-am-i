@@ -26,7 +26,7 @@ workspace/catkin_ws/src# tree
 │   └── srv
 │       └── DriveToTarget.srv
 ├── CMakeLists.txt -> /opt/ros/kinetic/share/catkin/cmake/toplevel.cmake
-├── my_robot
+├── my_robot                                            # Package contains robot and world
 │   ├── CMakeLists.txt
 │   ├── config
 │   │   ├── base_local_planner_params.yaml
@@ -50,7 +50,7 @@ workspace/catkin_ws/src# tree
 │   └── worlds
 │       ├── cho_robot_world.world
 │       └── robotl1_old.world
-├── pgm_map_creator
+├── pgm_map_creator                                     # Package for converting a world into a pgm 2D map
 │   ├── CMakeLists.txt
 │   ├── CODEOWNERS
 │   ├── launch
@@ -75,7 +75,7 @@ workspace/catkin_ws/src# tree
 │   ├── package.xml
 │   ├── README.md
 │   └── teleop_twist_keyboard.py
-└── whereami
+└── whereami                                            # Package
     ├── CMakeLists.txt
     ├── config
     │   ├── base_local_planner_params.yaml
@@ -94,3 +94,14 @@ workspace/catkin_ws/src# tree
     └── src
 
 ```
+
+## Project Overview
+Following package need to be installed
+```bash
+$ sudo apt-get install ros-kinetic-navigation
+$ sudo apt-get install ros-kinetic-map-server
+$ sudo apt-get install ros-kinetic-move-base
+$ sudo apt-get install ros-kinetic-amcl
+```
+
+
