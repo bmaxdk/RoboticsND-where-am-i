@@ -111,6 +111,7 @@ $ cd /home/workspace/catkin_ws/src/whereami/launch/
 $ touch amcl.launch
 ```
 
+
 In [amcl.launch](https://github.com/bmaxdk/RoboticsND-where-am-i/blob/main/catkin_ws/src/whereami/launch/amcl.launch) file, `Map Server Node`, `AMCL Node`, and `Move Base Node` are added.
 
 [`Map Server Node`](http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes as the `amcl` node. It will locate the map and send it ouy as the map data.
@@ -121,15 +122,16 @@ Map server node set up:
 <arg name="map_file" default="$(find whereami)/maps/map.yaml"/>
 <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 ```
-To perform the AMCL localization, `AMCL Node` is necessary for using `odometry` and `laser scan` data. `amcl` package will look for the `scan` topic ofr Hokuyo Lidar sensor data which publish on the `<YOUR PACKAGE NAME>/laser/scan`. More information about [remap](http://wiki.ros.org/roslaunch/XML/remap) in ROS Wiki.
 
-Add AMCL parameter necessary to connect the world(`map` frame) with the robot(`odom` frame).
+
+To perform the AMCL localization, `AMCL Node` is necessary for using `odometry` and `laser scan` data. `amcl` package will look for the `scan` topic ofr Hokuyo Lidar sensor data which publish on the `<YOUR PACKAGE NAME>/laser/scan`. More information about [remap](http://wiki.ros.org/roslaunch/XML/remap) in ROS Wiki. Add AMCL parameter necessary to connect the world(`map` frame) with the robot(`odom` frame).
 
 ```xml
 
 <!-- AMCL Node -->
 <node name="amcl" ...>
-  <remap from="scan" to="<YOUR PACKAGE NAME>/scan"/>
+<!--   <remap from="scan" to="<YOUR PACKAGE NAME>/laser/scan"/> -->
+  <remap from="scan" to="whereami/scan"/>
   <param name="odom_frame_id" value="odom"/>
   <param name="odom_model_type" value="diff-corrected"/>
   <param name="base_frame_id" value="robot_footprint"/>
@@ -150,6 +152,60 @@ In AMCL node, it allows to set initial position by adding
 <param name="initial_pose_y" value="<YOUR Y VALUE>"/>
 ```
 
+`move_base` package allows to define a nevigation goal position for the robot in the map which will navigate to that goal position. This step is option if choose to use `teleop` node to control and localize robot. This step utilizes a costmap where each part of the map is divided into which area is occupied, like walls or obstacles and which area is unoccupied.
+`Move Base Node`requires both remap and parameters to move the robot in the world. You can use`rosparam` to include config files to set multiple parameters directly. 
+In this step added [config files](https://github.com/bmaxdk/RoboticsND-where-am-i/tree/main/catkin_ws/src/whereami/config) in `catkin_ws/src/whereami/config`.
+```bash
+$ cd ..
+$ mkdir config
+$ cd config
+$ wget https://s3-us-west-1.amazonaws.com/udacity-robotics/Resource/where_am_i/config.zip
+$ unzip config.zip
+$ rm config.zip
+```
+```xml
+<!--   <rosparam file="$(find robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> -->
+<!--   <rosparam file="$(find robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" /> -->
+<!--   <rosparam file="$(find robot)/config/local_costmap_params.yaml" command="load" /> -->
+<!--   <rosparam file="$(find robot)/config/global_costmap_params.yaml" command="load" /> -->
+<!--   <rosparam file="$(find robot)/config/base_local_planner_params.yaml" command="load" /> -->
+```
+```xml
+  <node name="move_base" pkg="move_base" type="move_base" respawn="false" output="screen">
+<!--     <remap from="scan" to="<YOUR PACKAGE NAME>/laser/scan"/> -->
+    <remap from="scan" to="whereami/scan"/> 
+    <param name="base_global_planner" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <!-- <rosparam file="$(find robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> -->
+    <!-- <rosparam file="$(find robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap" /> -->
+    <!-- <rosparam file="$(find robot)/config/local_costmap_params.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find robot)/config/global_costmap_params.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find robot)/config/base_local_planner_params.yaml" command="load" /> -->
+  </node>
+```
+
+### Teleop Package
+To control robot with teleop package
+```bash
+$ cd /home/workspace/catkin_ws/src
+$ git clone https://github.com/ros-teleop/teleop_twist_keyboard
+$ cd ..
+$ catkin_make
+$ source devel/setup.bash
+$ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
+To launch the simulation:
+```bash
+$ cd /home/workspace/catkin_ws/
+# roslaunch <YOUR PACKAGE NAME> <YOUR WORLD>.launch
+$ roslaunch my_robot world.launch
+
+# In a new terminal, launch amcl launch file:
+# roslaunch <YOUR PACKAGE NAME> amcl.launch
+$ roslaunch whereami amcl.launch
+
+```
 
 
 ## Directory Structure
@@ -266,24 +322,25 @@ Send a `2D Nav Goal` from RViz. Click the `2D Nav Goal` button in the toolbar, t
 The amcl package has a lot of parameters to select from. Different sets of parameters contribute to different aspects of the algorithm. Broadly speaking, they can be categorized into three categories - overall filter, laser, and odometry. Let’s cover some of the parameters that we recommend you start with or details to focus on.
 
 Overall Filter
-min_particles and max_particles - As amcl dynamically adjusts its particles for every iteration, it expects a range of the number of particles as an input. Often, this range is tuned based on your system specifications. A larger range, with a high maximum might be too computationally extensive for a low-end system.
-initial_pose - For the project, you should set the position to [0, 0]. Feel free to play around with the mean yaw value.
-update_min* - amcl relies on incoming laser scans. Upon receiving a scan, it checks the values for update_min_a and update_min_d and compares to how far the robot has moved. Based on this comparison it decides whether or not to perform a filter update or to discard the scan data. Discarding data could result in poorer localization results, and too many frequent filter updates for a fast moving robot could also cause computational problems.
+* `min_particles` and `max_particles` - As amcl dynamically adjusts its particles for every iteration, it expects a range of the number of particles as an input. Often, this range is tuned based on your system specifications. A larger range, with a high maximum might be too computationally extensive for a low-end system.
+* `initial_pose` - For the project, you should set the position to [0, 0]. Feel free to play around with the mean yaw value.
+* `update_min*` - `amcl` relies on incoming laser scans. Upon receiving a scan, it checks the values for `update_min_a` and `update_min_d` and compares to how far the robot has moved. Based on this comparison it decides whether or not to perform a filter update or to discard the scan data. Discarding data could result in poorer localization results, and too many frequent filter updates for a fast moving robot could also cause computational problems.
+
+
 Laser
-There are two different types of models to consider under this - the likelihood_field and the beam. Each of these models defines how the laser rangefinder sensor estimates the obstacles in relation to the robot.
+There are two different types of models to consider under this - the `likelihood_field` and the `beam`. Each of these models defines how the laser rangefinder sensor estimates the obstacles in relation to the robot.
 
-The likelihood_field model is usually more computationally efficient and reliable for an environment such as the one you are working with. So you can focus on parameters for that particular model such as the -
+The `likelihood_field` model is usually more computationally efficient and reliable for an environment such as the one you are working with. So you can focus on parameters for that particular model such as the -
 
-laser_*_range
-laser_max_beams
-laser_z_hit and laser_z_rand
+* laser_*_range
+* laser_max_beams
+* laser_z_hit and laser_z_rand
 Tuning of these parameters will have to be experimental. While tuning them, observe the laser scan information in RViz and try to make sure that the laser scan matches or is aligned with the actual map, and how it gets updated as the robot moves. The better the estimation of where the obstacles are, the better the localization results.
 
+
 Odometry
-odom_model_type - Since you are working with a differential drive mobile robot, it’s best to use the diff-corrected type. There are additional parameters that are specific to this type - the odom_alphas (1 through 4). These parameters define how much noise is expected from the robot's movements/motions as it navigates inside the map.
+`odom_model_type` - Since you are working with a differential drive mobile robot, it’s best to use the `diff-corrected` type. There are additional parameters that are specific to this type - the `odom_alphas` (1 through 4). These parameters define how much noise is expected from the robot's movements/motions as it navigates inside the map.
 
 Note: The odometry information for this project is received directly from Gazebo, and is equivalent to the ground truth value (no noise expected). So, you need not have to tune these parameters and can leave them at their default values. But feel free to experiment with some values and see if you notice any changes.
 
-Important: The above set of parameters should help you get started, however they aren't the only ones that can improve your results. You are encouraged and required to go through the documentation, identify which parameters might help you improve your localization results, and experiment with them. All the remaining parameters and corresponding documentation can be found on the ROS wiki's amcl page.
-
-If you received warning on `Transform Timeout` and `Map Update Loop`, you might want to configure the corresponding parameters. Namely larger transform_tolerance value for the AMCL node and lower update_frequency & publish_frequency values in the configuration files.
+If you received warning on `Transform Timeout` and `Map Update Loop`, you might want to configure the corresponding parameters. Namely larger `transform_tolerance` value for the AMCL node and lower `update_frequency` & `publish_frequency` values in the configuration files.
