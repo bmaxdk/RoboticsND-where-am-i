@@ -21,13 +21,13 @@ Final Result
 
 ### Getting started
 
-* Following Instructions:
+#### Following Instructions:
 
 [ROS installation instructions](http://wiki.ros.org/ROS/Installation).
 
 [Gazebo download and installation instructions](http://gazebosim.org).
 
-* Following package need to be installed
+#### Following package need to be installed
 ```bash
 $ sudo apt-get install ros-kinetic-navigation
 $ sudo apt-get install ros-kinetic-map-server
@@ -35,13 +35,13 @@ $ sudo apt-get install ros-kinetic-move-base
 $ sudo apt-get install ros-kinetic-amcl
 ```
 
-* To run PGM map creator need to be installed `libignition-math2-dev` and `protobuf-compiler` to compile the map creator
+#### To run PGM map creator need to be installed `libignition-math2-dev` and `protobuf-compiler` to compile the map creator
 ```bash
 sudo apt-get install libignition-math2-dev protobuf-compiler
 
 ```
-* Build and launch the environment
 
+#### Build and launch the environment
 With Gazebo and ROS installed, first need to create a catkin workspace. Navigate to your home directory and execute:
 ```bash
 $ mkdir -p catkin_ws/src
@@ -77,14 +77,14 @@ To launch amcl laucn file, open a new terminal and execute the following:
 $ source devel/setup.bash
 $ roslaunch whereami amcl.launch
 ```
-* Rviz Configuration will be already setup. If not, follows step
+#### Rviz Configuration will be already setup. If not, follows step
 Select `odom` for fixed frame. 
 Add `RobotModel`.
 Add `Map` and select `/map` topic.
 Add `PoseArray` and select `particlecloud` topic.
 Add laser sensor.
 
-
+#### Control robot step
 (option1) To launch telop, open a new terminal and execute the following:
 ```bash
 $ source devel/setup.bash
