@@ -158,7 +158,7 @@ workspace/catkin_ws/src# tree
 │   │   └── request_publisher.launch
 │   ├── LICENSE
 │   ├── maps
-│   │   └── map.pgm
+│   │   └── map.pgm                                     # PGM map generated from pgm_map_creator
 │   ├── msgs
 │   │   ├── CMakeLists.txt
 │   │   └── collision_map_request.proto
@@ -168,9 +168,9 @@ workspace/catkin_ws/src# tree
 │   │   ├── collision_map_creator.cc
 │   │   └── request_publisher.cc
 │   └── world
-│       ├── cho_robot_world.world
+│       ├── cho_robot_world.world                       # my world file with plugin added to generate pgm map
 │       └── udacity_mtv
-├── teleop_twist_keyboard
+├── teleop_twist_keyboard                               # (Optioin-2) Teleop Robot package
 │   ├── CHANGELOG.rst
 │   ├── CMakeLists.txt
 │   ├── package.xml
