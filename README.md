@@ -19,7 +19,7 @@ Final Result
 ![alt text][image3]
 
 
-### Getting started
+### Getting Started
 
 #### Following Instructions:
 
