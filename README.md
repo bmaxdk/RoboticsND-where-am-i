@@ -53,7 +53,7 @@ $ catkin_make
 
 Next, clone the repository into the src directory:
 ```bash
-$ git clone [https://github.com/bmaxdk/RoboticsND-Go-Chase-It.git](https://github.com/bmaxdk/RoboticsND-where-am-i.git](https://github.com/bmaxdk/RoboticsND-where-am-i.git)
+$ git clone [https://github.com/bmaxdk/RoboticsND-where-am-i.git](https://github.com/bmaxdk/RoboticsND-where-am-i.git)
 $ mv -avr RoboticsND-where-am-i/catkin_ws/src src
 $ rm -rf RoboticsND-where-am-i
 $ cd src
