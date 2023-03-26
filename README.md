@@ -111,6 +111,46 @@ $ cd /home/workspace/catkin_ws/src/whereami/launch/
 $ touch amcl.launch
 ```
 
+In [amcl.launch](https://github.com/bmaxdk/RoboticsND-where-am-i/blob/main/catkin_ws/src/whereami/launch/amcl.launch) file, `Map Server Node`, `AMCL Node`, and `Move Base Node` are added.
+
+[`Map Server Node`](http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes as the `amcl` node. It will locate the map and send it ouy as the map data.
+
+Map server node set up:
+```xml
+<!-- <arg name="map_file" default="$(find <YOUR PACKAGE NAME>)/maps/<YOUR MAP NAME>.yaml"/> -->
+<arg name="map_file" default="$(find whereami)/maps/map.yaml"/>
+<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+```
+To perform the AMCL localization, `AMCL Node` is necessary for using `odometry` and `laser scan` data. `amcl` package will look for the `scan` topic ofr Hokuyo Lidar sensor data which publish on the `<YOUR PACKAGE NAME>/laser/scan`. More information about [remap](http://wiki.ros.org/roslaunch/XML/remap) in ROS Wiki.
+
+Add AMCL parameter necessary to connect the world(`map` frame) with the robot(`odom` frame).
+
+```xml
+
+<!-- AMCL Node -->
+<node name="amcl" ...>
+  <remap from="scan" to="<YOUR PACKAGE NAME>/scan"/>
+  <param name="odom_frame_id" value="odom"/>
+  <param name="odom_model_type" value="diff-corrected"/>
+  <param name="base_frame_id" value="robot_footprint"/>
+  <param name="global_frame_id" value="map"/>
+</node>
+```
+In [`amcl` ROS Wiki](http://wiki.ros.org/amcl), contains the purpose of the parameters such as:
+* `odom_frame_id` (string, default: "odom"): Which frame to use for odometry
+* `odom_model_type` (string, default: "diff"): Which model to use, either "diff", "omni", "diff-corrected" or "omni-corrected"
+* `base_frame_id` (string, default: "base_link"): Which frame to use for the robot base
+* `global_frame_id` (string, default: "map"): The name of the coordinate frame published by the localization system
+
+Remember, AMCL package `links` the robot (`odom` frame) with the world (`map` frame). These parameters are required for `amcl` package to localize the robot in the world.
+
+In AMCL node, it allows to set initial position by adding
+```xml
+<param name="initial_pose_x" value="<YOUR X VALUE>"/>
+<param name="initial_pose_y" value="<YOUR Y VALUE>"/>
+```
+
+
 
 ## Directory Structure
 ```bash
