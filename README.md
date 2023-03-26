@@ -3,21 +3,17 @@
 
 Application of using the adaptive monte carlo localizatin (AMCL) algorithm is implemented in ROS. AMCL dynamically adjusts the number of particles over a period of time, as the robot navigates around in a map. The process of AMCL algorithm is followed by the [amcl](http://wiki.ros.org/amcl) ROS package to get a working localization. This is done in ROS-kinetic. If you wish to launch file in ROS-noetic, read [ros-noetic-whereami](https://github.com/bmaxdk/ros-noetic-where-am-i-amcl).
 
-[image1]: img/p1.png "img1"
-[image2]: img/p2.png "img2"
-[image3]: img/f1.png "img3"
-[image4]: img/f2.png "img4"
+[image1]: img/c1.png "img1"
+[image2]: img/i1.png "img2"
+[image3]: img/i2.png "img3"
+[image4]: img/m1.png "img4"
+[image5]: img/n1.png "img5"
+[image6]: img/n3.png "img6"
+[image7]: img/f1.png "img7"
+
 
 ### Result
-Initial Condition 
-![alt text][image1]
-
-Processing Condition
-![alt text][image2]
-
-Final Result
-![alt text][image3]
-
+![alt text][image7]
 
 ### Getting Started
 
@@ -84,12 +80,23 @@ $ roslaunch whereami amcl.launch
 * Add `PoseArray` and select `particlecloud` topic.
 * Add laser sensor.
 
+
+Command line with teleop key
+![alt text][image1]
+
 #### Control robot step
 (option1) To launch telop, open a new terminal and execute the following:
 ```bash
 $ source devel/setup.bash
 $ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 ```
+Initial Condition with teleop key
+![alt text][image2]
+![alt text][image3]
+
+Result with teleop key in few steps
+![alt text][image4]
+
 
 (option2) To make the robot chase the white ball, open a new terminal and execute the following:
 ```bash
@@ -110,7 +117,11 @@ angular:
   z: 0.1" 
 ```
 
-![alt text][image4]
+(options4) using 2D Nav Goal to drag in rviz
+Using 2D Nav Goal
+![alt text][image5]
+![alt text][image6]
+
 
 ## Directory Structure
 ```bash
@@ -195,6 +206,8 @@ workspace/catkin_ws/src# tree
     └── src
 
 ```
+Final Result
+![alt text][image7]
 
 ## Project Overview
 Following package need to be installed
