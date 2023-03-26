@@ -13,6 +13,9 @@ Application of using the adaptive monte carlo localizatin (AMCL) algorithm is im
 
 
 ### Result
+Initial
+![alt text][image2]
+Final
 ![alt text][image7]
 
 ### Getting Started
@@ -91,10 +94,9 @@ $ source devel/setup.bash
 $ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 ```
 Initial Condition with teleop key
-![alt text][image2]
 ![alt text][image3]
 
-Result with teleop key in few steps
+Result with teleop key in few steps finalized the map correction
 ![alt text][image4]
 
 
