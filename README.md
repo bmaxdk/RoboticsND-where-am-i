@@ -102,6 +102,15 @@ negate: 0
 ```
 The default map size is 30 by 30, so the origin will be [-15, -15, 0], i.e. half the size of the map.
 
+### AMCL `launch` file
+[whereami](https://github.com/bmaxdk/RoboticsND-where-am-i/tree/main/catkin_ws/src/whereami) package contains `AMCL launch` file.
+The following steps applied to create AMCL launch file
+```bash
+# cd /home/workspace/catkin_ws/src/<YOUR PACKAGE NAME>/launch/
+$ cd /home/workspace/catkin_ws/src/whereami/launch/
+$ touch amcl.launch
+```
+
 
 ## Directory Structure
 ```bash
