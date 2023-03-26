@@ -60,7 +60,7 @@ $ cp cho_robot_world.world src/pgm_map_creator/world/
 
 ```
 
-Open the map file using the editor of your choice. Add the following tag towards the end of the file, but just before </world> tag
+In `src/pgm_map_creator/world/` add the following tag towards the end of the file, but just before </world> tag in world file.
 ```xml
 <plugin filename="libcollision_map_creator.so" name="collision_map_creator"/>
 ```
