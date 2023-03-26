@@ -19,7 +19,180 @@ Final Result
 ![alt text][image3]
 
 
+### Getting started
 
+* Following Instructions:
+
+[ROS installation instructions](http://wiki.ros.org/ROS/Installation).
+
+[Gazebo download and installation instructions](http://gazebosim.org).
+
+* Following package need to be installed
+```bash
+$ sudo apt-get install ros-kinetic-navigation
+$ sudo apt-get install ros-kinetic-map-server
+$ sudo apt-get install ros-kinetic-move-base
+$ sudo apt-get install ros-kinetic-amcl
+```
+
+* To run PGM map creator need to be installed `libignition-math2-dev` and `protobuf-compiler` to compile the map creator
+```bash
+sudo apt-get install libignition-math2-dev protobuf-compiler
+
+```
+* Build and launch the environment
+
+With Gazebo and ROS installed, first need to create a catkin workspace. Navigate to your home directory and execute:
+```bash
+$ mkdir -p catkin_ws/src
+$ cd catkin_ws/src
+$ catkin_init_workspace
+$ cd ..
+$ catkin_make
+```
+
+Next, clone the repository into the src directory:
+```bash
+$ git clone [https://github.com/bmaxdk/RoboticsND-Go-Chase-It.git](https://github.com/bmaxdk/RoboticsND-where-am-i.git](https://github.com/bmaxdk/RoboticsND-where-am-i.git)
+$ mv -avr RoboticsND-where-am-i/catkin_ws/src src
+$ rm -rf RoboticsND-where-am-i
+$ cd src
+$ rm -rf CMakeLists.txt
+```
+
+Then navigate up to the top-level catkin workspace directory and build the executables:
+```bash
+$ cd ..
+$ catkin_make
+```
+
+Next, you can open Gazebo with the robot in it:
+```bash
+$ source devel/setup.bash
+$ roslaunch my_robot world.launch
+```
+
+To launch amcl laucn file, open a new terminal and execute the following:
+```bash
+$ source devel/setup.bash
+$ roslaunch whereami amcl.launch
+```
+* Rviz Configuration will be already setup. If not, follows step
+Select `odom` for fixed frame. 
+Add `RobotModel`.
+Add `Map` and select `/map` topic.
+Add `PoseArray` and select `particlecloud` topic.
+Add laser sensor.
+
+
+(option1) To launch telop, open a new terminal and execute the following:
+```bash
+$ source devel/setup.bash
+$ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
+(option2) To make the robot chase the white ball, open a new terminal and execute the following:
+```bash
+$ source devel/setup.bash
+$ roslaunch ball_chaser ball_chaser.launch
+```
+Now place the white ball at different positions in front of the robot and see if the robot is chasing the ball.
+
+(option3) To control robot with topic message, open a new terminal and execute the following:
+```bash
+$ rostopic pub /cmd_vel geometry_msgs/Twist  "linear:
+  x: 0.1
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.1" 
+```
+
+## Directory Structure
+```bash
+workspace/catkin_ws/src# tree
+.
+├── ball_chaser
+│   ├── CMakeLists.txt
+│   ├── launch
+│   │   └── ball_chaser.launch
+│   ├── package.xml
+│   ├── src
+│   │   ├── drive_bot.cpp
+│   │   └── process_image.cpp
+│   └── srv
+│       └── DriveToTarget.srv
+├── CMakeLists.txt -> /opt/ros/kinetic/share/catkin/cmake/toplevel.cmake
+├── my_robot                                            # Package contains robot and world
+│   ├── CMakeLists.txt
+│   ├── config
+│   │   ├── base_local_planner_params.yaml
+│   │   ├── costmap_common_params.yaml
+│   │   ├── global_costmap_params.yaml
+│   │   ├── local_costmap_params.yaml
+│   │   └── __MACOSX
+│   ├── launch
+│   │   ├── amcl.launch
+│   │   ├── robot_description.launch
+│   │   └── world.launch
+│   ├── maps
+│   │   ├── map.pgm
+│   │   └── map.yaml
+│   ├── meshes
+│   │   └── hokuyo.dae
+│   ├── package.xml
+│   ├── urdf
+│   │   ├── my_robot.gazebo
+│   │   └── my_robot.xacro
+│   └── worlds
+│       ├── cho_robot_world.world                       # Current world file: Will use it to generate pgm_map
+│       └── robotl1_old.world
+├── pgm_map_creator                                     # Package for converting a world into a pgm map
+│   ├── CMakeLists.txt
+│   ├── CODEOWNERS
+│   ├── launch
+│   │   └── request_publisher.launch
+│   ├── LICENSE
+│   ├── maps
+│   │   └── map.pgm                                     # PGM map generated from pgm_map_creator
+│   ├── msgs
+│   │   ├── CMakeLists.txt
+│   │   └── collision_map_request.proto
+│   ├── package.xml
+│   ├── README.md
+│   ├── src
+│   │   ├── collision_map_creator.cc
+│   │   └── request_publisher.cc
+│   └── world
+│       ├── cho_robot_world.world                       # my world file with plugin added to generate pgm map
+│       └── udacity_mtv
+├── teleop_twist_keyboard                               # (Optioin-2) Teleop Robot package
+│   ├── CHANGELOG.rst
+│   ├── CMakeLists.txt
+│   ├── package.xml
+│   ├── README.md
+│   └── teleop_twist_keyboard.py
+└── whereami                                            # Package
+    ├── CMakeLists.txt
+    ├── config
+    │   ├── base_local_planner_params.yaml
+    │   ├── costmap_common_params.yaml
+    │   ├── global_costmap_params.yaml
+    │   ├── local_costmap_params.yaml
+    │   └── __MACOSX
+    ├── include
+    │   └── whereami
+    ├── launch
+    │   └── amcl.launch
+    ├── maps
+    │   ├── map.pgm                                     # pgm map of wold file that created from pgm_map_creator
+    │   └── map.yaml
+    ├── package.xml
+    └── src
+
+```
 
 ## Project Overview
 Following package need to be installed
@@ -195,7 +368,7 @@ $ source devel/setup.bash
 $ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 ```
 
-To launch the simulation:
+### Launch the simulation:
 ```bash
 $ cd /home/workspace/catkin_ws/
 # roslaunch <YOUR PACKAGE NAME> <YOUR WORLD>.launch
@@ -206,92 +379,6 @@ $ roslaunch my_robot world.launch
 $ roslaunch whereami amcl.launch
 
 ```
-
-
-## Directory Structure
-```bash
-workspace/catkin_ws/src# tree
-.
-├── ball_chaser
-│   ├── CMakeLists.txt
-│   ├── launch
-│   │   └── ball_chaser.launch
-│   ├── package.xml
-│   ├── src
-│   │   ├── drive_bot.cpp
-│   │   └── process_image.cpp
-│   └── srv
-│       └── DriveToTarget.srv
-├── CMakeLists.txt -> /opt/ros/kinetic/share/catkin/cmake/toplevel.cmake
-├── my_robot                                            # Package contains robot and world
-│   ├── CMakeLists.txt
-│   ├── config
-│   │   ├── base_local_planner_params.yaml
-│   │   ├── costmap_common_params.yaml
-│   │   ├── global_costmap_params.yaml
-│   │   ├── local_costmap_params.yaml
-│   │   └── __MACOSX
-│   ├── launch
-│   │   ├── amcl.launch
-│   │   ├── robot_description.launch
-│   │   └── world.launch
-│   ├── maps
-│   │   ├── map.pgm
-│   │   └── map.yaml
-│   ├── meshes
-│   │   └── hokuyo.dae
-│   ├── package.xml
-│   ├── urdf
-│   │   ├── my_robot.gazebo
-│   │   └── my_robot.xacro
-│   └── worlds
-│       ├── cho_robot_world.world                       # Current world file: Will use it to generate pgm_map
-│       └── robotl1_old.world
-├── pgm_map_creator                                     # Package for converting a world into a pgm map
-│   ├── CMakeLists.txt
-│   ├── CODEOWNERS
-│   ├── launch
-│   │   └── request_publisher.launch
-│   ├── LICENSE
-│   ├── maps
-│   │   └── map.pgm                                     # PGM map generated from pgm_map_creator
-│   ├── msgs
-│   │   ├── CMakeLists.txt
-│   │   └── collision_map_request.proto
-│   ├── package.xml
-│   ├── README.md
-│   ├── src
-│   │   ├── collision_map_creator.cc
-│   │   └── request_publisher.cc
-│   └── world
-│       ├── cho_robot_world.world                       # my world file with plugin added to generate pgm map
-│       └── udacity_mtv
-├── teleop_twist_keyboard                               # (Optioin-2) Teleop Robot package
-│   ├── CHANGELOG.rst
-│   ├── CMakeLists.txt
-│   ├── package.xml
-│   ├── README.md
-│   └── teleop_twist_keyboard.py
-└── whereami                                            # Package
-    ├── CMakeLists.txt
-    ├── config
-    │   ├── base_local_planner_params.yaml
-    │   ├── costmap_common_params.yaml
-    │   ├── global_costmap_params.yaml
-    │   ├── local_costmap_params.yaml
-    │   └── __MACOSX
-    ├── include
-    │   └── whereami
-    ├── launch
-    │   └── amcl.launch
-    ├── maps
-    │   ├── map.pgm                                     # pgm map of wold file that created from pgm_map_creator
-    │   └── map.yaml
-    ├── package.xml
-    └── src
-
-```
-
 
 ## Control Step
 #### (Option-1)Publishing Directly
