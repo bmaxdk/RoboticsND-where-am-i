@@ -55,17 +55,53 @@ $ cd ..
 $ catkin_make
 $ cd src/my_robot/worlds
 # copy current world file into world folder in pgm_map_creator package
-# cp <YOUR GAZEBO WORLD FILE> src/pgm_map_creator/world/<YOUR GAZEBO WORLD FILE>
+# cp <YOUR GAZEBO WORLD FILE> src/pgm_map_creator/world/
 $ cp cho_robot_world.world src/pgm_map_creator/world/
 
 ```
 
-In `src/pgm_map_creator/world/` add the following tag towards the end of the file, but just before </world> tag in world file.
+In `src/pgm_map_creator/world/` add the following tag towards the end of the file, but just before </world> tag into [world](https://github.com/bmaxdk/RoboticsND-where-am-i/blob/main/catkin_ws/src/pgm_map_creator/world/cho_robot_world.world) file.
 ```xml
 <plugin filename="libcollision_map_creator.so" name="collision_map_creator"/>
 ```
 
-Following tag towards the end of the file, but just before </world> tag:
+To create the PGM map, need to run `gzserver` with the map file and launch the `request_publisher` node
+```bash
+# gzserver src/pgm_map_creator/world/<YOUR GAZEBO WORLD FILE>
+$ gzserver src/pgm_map_creator/world/cho_robot_world.world
+
+# open another terminal
+$ roslaunch pgm_map_creator request_publisher.launch
+```
+If the map is cropped, you might want to adjust the parameters in `launch/request_publisher.launch`, namely the `x` and `y` values, which defines the size of the map:
+```xml
+  <arg name="xmin" default="-15" />
+  <arg name="xmax" default="15" />
+  <arg name="ymin" default="-15" />
+  <arg name="ymax" default="15" />
+  <arg name="scan_height" default="5" />
+  <arg name="resolution" default="0.01" />
+```
+
+Once pgm map is created in maps folder, move map.map to your package. After that need to create `yaml` file providing the [metadata about the map](http://wiki.ros.org/map_server#YAML_format)
+```bash
+$ cd /home/workspace/catkin_ws/
+# cp src/pgm_map_creator/maps/<YOUR MAP NAME>  src/<YOUR PACKAGE NAME>/maps/<YOUR MAP NAME>
+$ cp src/pgm_map_creator/maps/map.pgm  src/whereami/maps/
+$ cd src/whereami/maps
+touch map.yaml
+```
+In map.yaml
+```yaml
+image: map.pgm
+resolution: 0.01
+origin: [-15.0, -15.0, 0.0]
+occupied_thresh: 0.65
+free_thresh: 0.196
+negate: 0
+```
+The default map size is 30 by 30, so the origin will be [-15, -15, 0], i.e. half the size of the map.
+
 
 ## Directory Structure
 ```bash
