@@ -3,12 +3,32 @@
 
 Application of using the adaptive monte carlo localizatin (AMCL) algorithm is implemented in ROS. AMCL dynamically adjusts the number of particles over a period of time, as the robot navigates around in a map. The process of AMCL algorithm is followed by the [amcl](http://wiki.ros.org/amcl) ROS package to get a working localization.
 
-[image1]: project_img/img1.png "img1"
-[image2]: project_img/img2.png "img2"
+[image1]: img/p1.png "img1"
+[image2]: img/p2.png "img2"
+[image3]: img/f1.png "img3"
 
+
+### Result
+Initial Condition 
 ![alt text][image1]
 
+Processing Condition
 ![alt text][image2]
+
+Final Result
+![alt text][image3]
+
+
+
+
+## Project Overview
+Following package need to be installed
+```bash
+$ sudo apt-get install ros-kinetic-navigation
+$ sudo apt-get install ros-kinetic-map-server
+$ sudo apt-get install ros-kinetic-move-base
+$ sudo apt-get install ros-kinetic-amcl
+```
 
 
 ## Directory Structure
@@ -93,15 +113,6 @@ workspace/catkin_ws/src# tree
     ├── package.xml
     └── src
 
-```
-
-## Project Overview
-Following package need to be installed
-```bash
-$ sudo apt-get install ros-kinetic-navigation
-$ sudo apt-get install ros-kinetic-map-server
-$ sudo apt-get install ros-kinetic-move-base
-$ sudo apt-get install ros-kinetic-amcl
 ```
 
 
