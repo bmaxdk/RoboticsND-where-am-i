@@ -105,7 +105,7 @@ Result with teleop key in few steps finalized the map correction
 $ source devel/setup.bash
 $ roslaunch ball_chaser ball_chaser.launch
 ```
-Now place the white ball at different positions in front of the robot and see if the robot is chasing the ball.
+Now place the white ball at different positions in front of the robot and see if the robot is chasing the ball. More information for [Go-Chase-It Repository](https://github.com/bmaxdk/RoboticsND-Go-Chase-It)
 
 (option3) To control robot with topic message, open a new terminal and execute the following:
 ```bash
