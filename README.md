@@ -1,4 +1,5 @@
-# RoboticsND-where-am-i
+<h1 align="center">RoboticsND-where-am-i</h1>
+
 ## Project 3: Where Am I
 
 Application of using the adaptive monte carlo localizatin (AMCL) algorithm is implemented in ROS. AMCL dynamically adjusts the number of particles over a period of time, as the robot navigates around in a map. The process of AMCL algorithm is followed by the [amcl](http://wiki.ros.org/amcl) ROS package to get a working localization. This is done in ROS-kinetic. If you wish to launch file in ROS-noetic, read [ros-noetic-whereami](https://github.com/bmaxdk/ros-noetic-where-am-i-amcl).
